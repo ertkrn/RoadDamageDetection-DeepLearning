@@ -1,0 +1,51 @@
+﻿CSV dosyasını TFRecord Dosyas�na �evirme: 
+train.record için:
+python generate_tfrecord.py 
+--label0=D00
+--label1=D01
+--label2=D10
+--label3=D11
+--label4=D20
+--label5=D40
+--label6=D43
+--label7=D44
+--csv_input=C:\Users\sglvladi\Documents\TensorFlow\workspace\training_demo\annotations\train_labels.csv 
+--output_path=C:\Users\sglvladi\Documents\TensorFlow\workspace\training_demo\annotations\train.record 
+--img_path=C:\Users\sglvladi\Documents\TensorFlow\workspace\training_demo\images\train
+
+test.record için:
+python generate_tfrecord.py 
+--label0=D00
+--label1=D01
+--label2=D10
+--label3=D11
+--label4=D20
+--label5=D40
+--label6=D43
+--label7=D44
+--csv_input=C:\Users\sglvladi\Documents\TensorFlow\workspace\training_demo\annotations\test_labels.csv 
+--output_path=C:\Users\sglvladi\Documents\TensorFlow\workspace\training_demo\annotations\test.record --img_path=C:\Users\sglvladi\Documents\TensorFlow\workspace\training_demo\images\test
+
+Eğitimi başlatmak için:
+python train.py --logtostderr --train_dir=training/ --pipeline_config_path=training/pipeline.config
+
+Tensorboard başlatmak i�in:(Anaconda Prompt)
+tensorboard --logdir=training\
+
+Ckpt dosyasını pb(Frozen Graph) çevirmek için:
+python export_inference_graph.py --input_type=image_tensor --pipeline_config_path=training/pipeline.config --trained_checkpoint_prefix=training/model.ckpt-4000 --output_directory=trained-inference-graphs/output_inference_graph_v1.pb
+
+Eğitim başlatmak için2 :
+gcloud ml-engine jobs submit training `whoami`_object_detection_`date +%s` \
+--job-dir="D:/Ders Notları/Proje&Bitirme/Bitirme/Python/ProjeDeneme/Tensorflow/workspace/training_demo/pre-trained-model" \
+--packages dist/object_detection-0.1.tar.gz,slim/dist/slim-0.1.tar.gz,/tmp/pycocotools/pycocotools-2.0.tar.gz \
+--module-name object_detection.model_tpu_main \
+--runtime-version 1.8 \
+--scale-tier BASIC_TPU \
+--region us-central1 \
+-- \
+--model_dir="D:/Ders Notları/Proje&Bitirme/Bitirme/Python/ProjeDeneme/Tensorflow/workspace/training_demo/pre-trained-model" \
+--tpu_zone us-central1 \
+--pipeline_config_path=gs:"D:/Ders Notları/Proje&Bitirme/Bitirme/Python/ProjeDeneme/Tensorflow/workspace/training_demo/training/pipeline.config"
+
+gcloud ml-engine jobs submit training `whoami`_object_detection_`date +%s` --job-dir="D:/Ders Notları/Proje&Bitirme/Bitirme/Python/ProjeDeneme/Tensorflow/workspace/training_demo/pre-trained-model" --packages dist/object_detection-0.1.tar.gz,slim/dist/slim-0.1.tar.gz,/tmp/pycocotools/pycocotools-2.0.tar.gz --module-name object_detection.model_tpu_main --runtime-version 1.8 --scale-tier BASIC_TPU --region us-central1 -- --model_dir="D:/Ders Notları/Proje&Bitirme/Bitirme/Python/ProjeDeneme/Tensorflow/workspace/training_demo/pre-trained-model" --tpu_zone us-central1 --pipeline_config_path=gs:"D:/Ders Notları/Proje&Bitirme/Bitirme/Python/ProjeDeneme/Tensorflow/workspace/training_demo/training/pipeline.config"
